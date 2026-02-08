@@ -13,7 +13,6 @@ interface SendStatus {
 
 export function BirthdayCard({ policies }: BirthdayCardProps) {
     const [sendStatus, setSendStatus] = useState<SendStatus>({});
-    const [autoSendEnabled, setAutoSendEnabled] = useState(false);
 
     // Filtrar clientes con cumpleaños hoy
     const birthdaysToday = policies.filter(p => p.fechaNacimiento && isBirthdayToday(p.fechaNacimiento));
@@ -68,29 +67,13 @@ export function BirthdayCard({ policies }: BirthdayCardProps) {
 
     return (
         <div className="bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 rounded-2xl border border-pink-200 dark:border-pink-800/50 p-6 mb-6 transition-colors duration-200">
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                    <div className="bg-pink-500 p-2 rounded-lg">
-                        <Cake className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-slate-800 dark:text-white">
-                        Cumpleaños
-                    </h3>
+            <div className="flex items-center gap-2 mb-4">
+                <div className="bg-pink-500 p-2 rounded-lg">
+                    <Cake className="w-5 h-5 text-white" />
                 </div>
-
-                {/* Toggle de envío automático */}
-                <label className="flex items-center gap-2 cursor-pointer">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Auto-envío</span>
-                    <div className="relative">
-                        <input
-                            type="checkbox"
-                            className="sr-only peer"
-                            checked={autoSendEnabled}
-                            onChange={(e) => setAutoSendEnabled(e.target.checked)}
-                        />
-                        <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 dark:peer-focus:ring-pink-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
-                    </div>
-                </label>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-white">
+                    Cumpleaños
+                </h3>
             </div>
 
             {/* Cumpleaños de hoy */}
