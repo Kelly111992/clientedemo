@@ -8,8 +8,9 @@ import { PolicyTable } from './components/PolicyTable';
 import { AddPolicyModal } from './components/AddPolicyModal';
 import { ThemeProvider } from './components/ThemeProvider';
 import { ThemeToggle } from './components/ThemeToggle';
-import { BirthdayCard } from './components/BirthdayCard';
+import { CalendarWidget } from './components/CalendarWidget';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
+import { BirthdayCard } from './components/BirthdayCard';
 
 const App: React.FC = () => {
   const [policies, setPolicies] = useState<Policy[]>(INITIAL_POLICIES);
@@ -126,8 +127,15 @@ const App: React.FC = () => {
           {/* Stats Section */}
           <DashboardStats stats={stats} />
 
-          {/* Birthday Reminders */}
-          <BirthdayCard policies={policies} />
+          {/* Grid for Birthday and Calendar */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="lg:col-span-2">
+              <BirthdayCard policies={policies} />
+            </div>
+            <div className="h-full min-h-[300px]">
+              <CalendarWidget />
+            </div>
+          </div>
 
           {/* Policies Table */}
           <PolicyTable
