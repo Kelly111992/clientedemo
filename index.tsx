@@ -11,7 +11,7 @@ if (!rootElement) {
   throw new Error("Could not find root element to mount to");
 }
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "TU_CLIENT_ID_DE_GOOGLE_CLOUD";
+const GOOGLE_CLIENT_ID = "609353558960-pf3hb0u4tpj4adt1qgbuioav9pv6c634.apps.googleusercontent.com";
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(
