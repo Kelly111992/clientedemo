@@ -10,7 +10,6 @@ import { ThemeProvider } from './components/ThemeProvider';
 import { ThemeToggle } from './components/ThemeToggle';
 import { BirthdayCard } from './components/BirthdayCard';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
-import { ExpirationCard } from './components/ExpirationCard';
 
 const App: React.FC = () => {
   const [policies, setPolicies] = useState<Policy[]>(INITIAL_POLICIES);
@@ -126,9 +125,6 @@ const App: React.FC = () => {
 
           {/* Stats Section */}
           <DashboardStats stats={stats} />
-
-          {/* Expiration Alerts - IMPORTANT */}
-          <ExpirationCard policies={policies} onEditPolicy={handleEditPolicy} />
 
           {/* Birthday Reminders */}
           <BirthdayCard policies={policies} />
