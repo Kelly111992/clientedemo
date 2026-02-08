@@ -9,10 +9,13 @@ import { AddPolicyModal } from './components/AddPolicyModal';
 import { ThemeProvider } from './components/ThemeProvider';
 import { ThemeToggle } from './components/ThemeToggle';
 import { BirthdayCard } from './components/BirthdayCard';
+import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
 
 const App: React.FC = () => {
   const [policies, setPolicies] = useState<Policy[]>(INITIAL_POLICIES);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingPolicy, setEditingPolicy] = useState<Policy | null>(null);
+  const [deletingPolicy, setDeletingPolicy] = useState<Policy | null>(null);
 
   // Calculate Stats on the fly
   const stats: StatsData = useMemo(() => {
@@ -34,12 +37,41 @@ const App: React.FC = () => {
     return { totalPolicies, expiringSoon, byRamo };
   }, [policies]);
 
+  // CRUD Handlers
   const handleAddPolicy = (newPolicyData: Omit<Policy, 'id'>) => {
     const newPolicy: Policy = {
       ...newPolicyData,
-      id: Date.now().toString(), // Simple ID generation
+      id: Date.now().toString(),
     };
     setPolicies(prev => [...prev, newPolicy]);
+  };
+
+  const handleEditPolicy = (policy: Policy) => {
+    setEditingPolicy(policy);
+  };
+
+  const handleUpdatePolicy = (updatedData: Omit<Policy, 'id'>) => {
+    if (!editingPolicy) return;
+
+    setPolicies(prev =>
+      prev.map(p =>
+        p.id === editingPolicy.id
+          ? { ...updatedData, id: editingPolicy.id }
+          : p
+      )
+    );
+    setEditingPolicy(null);
+  };
+
+  const handleDeleteClick = (policy: Policy) => {
+    setDeletingPolicy(policy);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deletingPolicy) return;
+
+    setPolicies(prev => prev.filter(p => p.id !== deletingPolicy.id));
+    setDeletingPolicy(null);
   };
 
   return (
@@ -75,16 +107,16 @@ const App: React.FC = () => {
           {/* Page Title & Action */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <LayoutDashboard className="w-6 h-6 text-slate-400" />
                 Dashboard General
               </h2>
-              <p className="text-slate-500 mt-1">Bienvenido de nuevo. Aquí está el resumen de tu cartera.</p>
+              <p className="text-slate-500 dark:text-slate-400 mt-1">Bienvenido de nuevo. Aquí está el resumen de tu cartera.</p>
             </div>
 
             <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95"
+              onClick={() => setIsAddModalOpen(true)}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95"
             >
               <Plus className="w-5 h-5" />
               Agregar Póliza
@@ -98,15 +130,35 @@ const App: React.FC = () => {
           <BirthdayCard policies={policies} />
 
           {/* Policies Table */}
-          <PolicyTable policies={policies} />
+          <PolicyTable
+            policies={policies}
+            onEdit={handleEditPolicy}
+            onDelete={handleDeleteClick}
+          />
 
         </main>
 
-        {/* Modals */}
+        {/* Add Policy Modal */}
         <AddPolicyModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
           onAdd={handleAddPolicy}
+        />
+
+        {/* Edit Policy Modal */}
+        <AddPolicyModal
+          isOpen={editingPolicy !== null}
+          onClose={() => setEditingPolicy(null)}
+          onAdd={handleUpdatePolicy}
+          editPolicy={editingPolicy || undefined}
+        />
+
+        {/* Delete Confirmation Modal */}
+        <ConfirmDeleteModal
+          isOpen={deletingPolicy !== null}
+          policyName={deletingPolicy?.nombre || ''}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setDeletingPolicy(null)}
         />
       </div>
     </ThemeProvider>

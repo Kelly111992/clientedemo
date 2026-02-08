@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Policy, RamoType } from '../types';
-import { Search, Filter, Phone, AlertTriangle } from 'lucide-react';
+import { Search, Filter, Phone, AlertTriangle, Pencil, Trash2 } from 'lucide-react';
 import { isExpiringSoon, formatDate } from '../utils/dateUtils';
 import { RAMO_COLORS } from '../constants';
 
 interface PolicyTableProps {
   policies: Policy[];
+  onEdit?: (policy: Policy) => void;
+  onDelete?: (policy: Policy) => void;
 }
 
-export const PolicyTable: React.FC<PolicyTableProps> = ({ policies }) => {
+export const PolicyTable: React.FC<PolicyTableProps> = ({ policies, onEdit, onDelete }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRamo, setFilterRamo] = useState<RamoType | 'Todos'>('Todos');
 
@@ -22,10 +24,10 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies }) => {
 
   const getRamoBadgeColor = (ramo: string) => {
     switch (ramo) {
-      case 'Vida': return 'bg-blue-50 text-blue-700 ring-blue-600/20';
-      case 'Gastos Médicos': return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20';
-      case 'Auto': return 'bg-amber-50 text-amber-700 ring-amber-600/20';
-      default: return 'bg-slate-50 text-slate-700 ring-slate-600/20';
+      case 'Vida': return 'bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-900/30 dark:text-blue-300 dark:ring-blue-500/30';
+      case 'Gastos Médicos': return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-500/30';
+      case 'Auto': return 'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-900/30 dark:text-amber-300 dark:ring-amber-500/30';
+      default: return 'bg-slate-50 text-slate-700 ring-slate-600/20 dark:bg-slate-700 dark:text-slate-300';
     }
   };
 
@@ -74,7 +76,8 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies }) => {
               <th className="px-6 py-4">Póliza</th>
               <th className="px-6 py-4">Ramo</th>
               <th className="px-6 py-4">Producto</th>
-              <th className="px-6 py-4 text-right">Vigencia</th>
+              <th className="px-6 py-4">Vigencia</th>
+              <th className="px-6 py-4 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50 dark:divide-slate-700">
@@ -106,12 +109,12 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies }) => {
                     <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
                       {policy.producto}
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
                         {expiring && (
                           <div className="flex items-center gap-1 text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded text-xs font-medium animate-pulse">
                             <AlertTriangle className="w-3 h-3" />
-                            <span>Vence pronto</span>
+                            <span>Vence</span>
                           </div>
                         )}
                         <span className={`text-sm font-medium ${expiring ? 'text-red-600 dark:text-red-400' : 'text-slate-600 dark:text-slate-400'}`}>
@@ -119,12 +122,34 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies }) => {
                         </span>
                       </div>
                     </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {onEdit && (
+                          <button
+                            onClick={() => onEdit(policy)}
+                            className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+                            title="Editar póliza"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                        )}
+                        {onDelete && (
+                          <button
+                            onClick={() => onDelete(policy)}
+                            className="p-2 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                            title="Eliminar póliza"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 );
               })
             ) : (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-slate-400 dark:text-slate-500">
+                <td colSpan={6} className="px-6 py-12 text-center text-slate-400 dark:text-slate-500">
                   <div className="flex flex-col items-center justify-center">
                     <Search className="w-8 h-8 mb-3 opacity-20" />
                     <p>No se encontraron pólizas con los filtros actuales.</p>
