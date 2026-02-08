@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { Policy, RamoType } from '../types';
-import { Search, Filter, Phone, AlertTriangle, Pencil, Trash2, Calendar, CheckCircle2, AlertOctagon } from 'lucide-react';
+import { Search, Filter, Phone, AlertTriangle, Pencil, Trash2, Calendar, CheckCircle2, AlertOctagon, Send } from 'lucide-react';
 import { isExpiringSoon, formatDate, getExpirationCategory, ExpirationCategory, getDaysDifference } from '../utils/dateUtils';
 import { RAMO_COLORS } from '../constants';
+import { SendPolicyModal } from './SendPolicyModal';
 
 interface PolicyTableProps {
   policies: Policy[];
@@ -16,6 +17,13 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies, onEdit, onDe
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRamo, setFilterRamo] = useState<RamoType | 'Todos'>('Todos');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
+  const [isSendModalOpen, setIsSendModalOpen] = useState(false);
+  const [selectedPolicyForSend, setSelectedPolicyForSend] = useState<Policy | null>(null);
+
+  const handleOpenSendModal = (policy: Policy) => {
+    setSelectedPolicyForSend(policy);
+    setIsSendModalOpen(true);
+  };
 
   // Calcular contadores para los badges
   const stats = useMemo(() => {
@@ -78,8 +86,8 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies, onEdit, onDe
               <button
                 onClick={() => setFilterStatus('all')}
                 className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${filterStatus === 'all'
-                    ? 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-white'
-                    : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                  ? 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-white'
+                  : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700/50'
                   }`}
               >
                 Todas
@@ -89,8 +97,8 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies, onEdit, onDe
                 <button
                   onClick={() => setFilterStatus('critical')}
                   className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors flex items-center gap-1.5 ${filterStatus === 'critical'
-                      ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 ring-1 ring-red-500/20'
-                      : 'text-slate-500 hover:bg-red-50 dark:hover:bg-red-900/20'
+                    ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 ring-1 ring-red-500/20'
+                    : 'text-slate-500 hover:bg-red-50 dark:hover:bg-red-900/20'
                     }`}
                 >
                   <AlertOctagon className="w-4 h-4" />
@@ -105,8 +113,8 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies, onEdit, onDe
                 <button
                   onClick={() => setFilterStatus('warning')}
                   className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors flex items-center gap-1.5 ${filterStatus === 'warning'
-                      ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 ring-1 ring-amber-500/20'
-                      : 'text-slate-500 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+                    ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 ring-1 ring-amber-500/20'
+                    : 'text-slate-500 hover:bg-amber-50 dark:hover:bg-amber-900/20'
                     }`}
                 >
                   <AlertTriangle className="w-4 h-4" />
@@ -121,8 +129,8 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies, onEdit, onDe
                 <button
                   onClick={() => setFilterStatus('upcoming')}
                   className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors flex items-center gap-1.5 ${filterStatus === 'upcoming'
-                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 ring-1 ring-blue-500/20'
-                      : 'text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 ring-1 ring-blue-500/20'
+                    : 'text-slate-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'
                     }`}
                 >
                   <Calendar className="w-4 h-4" />
@@ -262,6 +270,13 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies, onEdit, onDe
                             <Trash2 className="w-4 h-4" />
                           </button>
                         )}
+                        <button
+                          onClick={() => handleOpenSendModal(policy)}
+                          className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
+                          title="Enviar póliza por WhatsApp"
+                        >
+                          <Send className="w-4 h-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -289,6 +304,13 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies, onEdit, onDe
           <button className="px-3 py-1 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors" disabled>Siguiente</button>
         </div>
       </div>
-    </div>
+
+
+      <SendPolicyModal
+        isOpen={isSendModalOpen}
+        onClose={() => setIsSendModalOpen(false)}
+        policy={selectedPolicyForSend}
+      />
+    </div >
   );
 };

@@ -75,6 +75,60 @@ export async function sendWhatsAppMessage(params: SendMessageParams): Promise<Se
     }
 }
 
+export interface SendMediaParams {
+    phone: string;
+    media: string; // Base64 string
+    fileName: string;
+    caption?: string;
+    mimeType?: string; // e.g., 'application/pdf', 'image/png'
+}
+
+/**
+ * Envía un archivo multimedia (PDF, Imagen) por WhatsApp
+ */
+export async function sendWhatsAppMedia(params: SendMediaParams): Promise<SendMessageResponse> {
+    const normalizedPhone = normalizePhone(params.phone);
+
+    try {
+        const response = await fetch(
+            `${EVOLUTION_API_URL}/message/sendMedia/${EVOLUTION_INSTANCE_NAME}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': EVOLUTION_API_KEY,
+                },
+                body: JSON.stringify({
+                    number: normalizedPhone,
+                    media: params.media,
+                    mediatype: params.mimeType?.startsWith('image') ? 'image' : 'document',
+                    fileName: params.fileName,
+                    caption: params.caption || '',
+                }),
+            }
+        );
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            return {
+                success: false,
+                error: errorData.message || `Error ${response.status}: ${response.statusText}`,
+            };
+        }
+
+        const data = await response.json();
+        return {
+            success: true,
+            messageId: data.key?.id || data.messageId,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Error desconocido',
+        };
+    }
+}
+
 /**
  * Genera el mensaje de felicitación de cumpleaños
  */
