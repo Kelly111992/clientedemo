@@ -85,30 +85,44 @@ export function generateBirthdayMessage(nombre: string): string {
 
 /**
  * Verifica si hoy es el cumpleaños de la persona
+ * Maneja correctamente las zonas horarias parseando el string directamente
  */
 export function isBirthdayToday(fechaNacimiento: string): boolean {
     if (!fechaNacimiento) return false;
 
     const today = new Date();
-    const birthday = new Date(fechaNacimiento);
+    const todayMonth = today.getMonth() + 1; // getMonth() es 0-indexado
+    const todayDay = today.getDate();
 
-    return (
-        today.getMonth() === birthday.getMonth() &&
-        today.getDate() === birthday.getDate()
-    );
+    // Parsear la fecha directamente del string (formato YYYY-MM-DD)
+    const parts = fechaNacimiento.split('-');
+    if (parts.length !== 3) return false;
+
+    const birthdayMonth = parseInt(parts[1], 10);
+    const birthdayDay = parseInt(parts[2], 10);
+
+    return todayMonth === birthdayMonth && todayDay === birthdayDay;
 }
 
 /**
  * Obtiene los días restantes para el próximo cumpleaños
+ * Maneja correctamente las zonas horarias
  */
 export function daysUntilBirthday(fechaNacimiento: string): number {
     if (!fechaNacimiento) return -1;
 
-    const today = new Date();
-    const birthday = new Date(fechaNacimiento);
+    // Parsear la fecha directamente del string (formato YYYY-MM-DD)
+    const parts = fechaNacimiento.split('-');
+    if (parts.length !== 3) return -1;
 
-    // Establecer el cumpleaños en el año actual
-    birthday.setFullYear(today.getFullYear());
+    const birthdayMonth = parseInt(parts[1], 10) - 1; // Ajustar a 0-indexado para Date
+    const birthdayDay = parseInt(parts[2], 10);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalizar a medianoche
+
+    // Crear fecha de cumpleaños en el año actual
+    const birthday = new Date(today.getFullYear(), birthdayMonth, birthdayDay);
 
     // Si ya pasó este año, usar el próximo año
     if (birthday < today) {
