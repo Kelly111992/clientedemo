@@ -8,6 +8,7 @@ export interface Policy {
   ramo: RamoType;
   producto: string;
   vigencia: string; // ISO Date string YYYY-MM-DD
+  fechaNacimiento?: string; // ISO Date string YYYY-MM-DD (optional)
 }
 
 export interface StatsData {

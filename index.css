@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html.dark {
+    @apply bg-slate-900 text-white;
+  }
+  
+  /* Smooth transition for theme change */
+  html {
+    @apply transition-colors duration-200 ease-in-out;
+  }
+}

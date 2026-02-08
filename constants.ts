@@ -8,7 +8,8 @@ export const INITIAL_POLICIES: Policy[] = [
     poliza: "70123456",
     ramo: "Vida",
     producto: "PPR",
-    vigencia: "2026-01-15"
+    vigencia: "2026-01-15",
+    fechaNacimiento: "1985-02-08" // ¡Hoy es su cumpleaños! (para demo)
   },
   {
     id: '2',
@@ -17,7 +18,8 @@ export const INITIAL_POLICIES: Policy[] = [
     poliza: "80134501",
     ramo: "Gastos Médicos",
     producto: "GMM",
-    vigencia: "2026-01-10"
+    vigencia: "2026-01-10",
+    fechaNacimiento: "1990-03-15"
   },
   {
     id: '3',
@@ -26,7 +28,8 @@ export const INITIAL_POLICIES: Policy[] = [
     poliza: "90145601",
     ramo: "Auto",
     producto: "Amplia",
-    vigencia: "2026-01-12"
+    vigencia: "2026-01-12",
+    fechaNacimiento: "1988-07-22"
   },
   {
     id: '4',
@@ -35,7 +38,8 @@ export const INITIAL_POLICIES: Policy[] = [
     poliza: "70123457",
     ramo: "Vida",
     producto: "PPR",
-    vigencia: "2026-02-20"
+    vigencia: "2026-02-20",
+    fechaNacimiento: "1975-12-01"
   },
   {
     id: '5',
@@ -44,7 +48,8 @@ export const INITIAL_POLICIES: Policy[] = [
     poliza: "80134502",
     ramo: "Gastos Médicos",
     producto: "GMM",
-    vigencia: "2026-02-25"
+    vigencia: "2026-02-25",
+    fechaNacimiento: "1992-02-09" // Mañana es su cumpleaños
   },
   {
     id: '6',
@@ -53,7 +58,8 @@ export const INITIAL_POLICIES: Policy[] = [
     poliza: "90145603",
     ramo: "Auto",
     producto: "Limitada",
-    vigencia: "2025-11-09" 
+    vigencia: "2025-11-09",
+    fechaNacimiento: "1980-05-10"
   }
 ];
 

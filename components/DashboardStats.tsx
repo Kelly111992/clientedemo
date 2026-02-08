@@ -11,40 +11,40 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       {/* Total Policies Card */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow">
+      <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col justify-between hover:shadow-md transition-shadow">
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-sm font-medium text-slate-500 mb-1">Total Pólizas</p>
-            <h3 className="text-3xl font-bold text-slate-800">{stats.totalPolicies}</h3>
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Pólizas</p>
+            <h3 className="text-3xl font-bold text-slate-800 dark:text-white">{stats.totalPolicies}</h3>
           </div>
-          <div className="p-3 bg-indigo-50 rounded-lg">
-            <FileText className="w-6 h-6 text-indigo-600" />
+          <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+            <FileText className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
           </div>
         </div>
-        <div className="mt-4 text-xs text-slate-400">
+        <div className="mt-4 text-xs text-slate-400 dark:text-slate-500">
           Activos en cartera
         </div>
       </div>
 
       {/* Expiring Soon Card */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow">
+      <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col justify-between hover:shadow-md transition-shadow">
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-sm font-medium text-slate-500 mb-1">Por Vencer (30 días)</p>
-            <h3 className="text-3xl font-bold text-slate-800">{stats.expiringSoon}</h3>
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Por Vencer (30 días)</p>
+            <h3 className="text-3xl font-bold text-slate-800 dark:text-white">{stats.expiringSoon}</h3>
           </div>
-          <div className={`p-3 rounded-lg ${stats.expiringSoon > 0 ? 'bg-red-50' : 'bg-green-50'}`}>
-            <AlertCircle className={`w-6 h-6 ${stats.expiringSoon > 0 ? 'text-red-500' : 'text-green-500'}`} />
+          <div className={`p-3 rounded-lg ${stats.expiringSoon > 0 ? 'bg-red-50 dark:bg-red-900/30' : 'bg-green-50 dark:bg-green-900/30'}`}>
+            <AlertCircle className={`w-6 h-6 ${stats.expiringSoon > 0 ? 'text-red-500 dark:text-red-400' : 'text-green-500 dark:text-green-400'}`} />
           </div>
         </div>
-        <div className="mt-4 text-xs text-slate-400">
+        <div className="mt-4 text-xs text-slate-400 dark:text-slate-500">
           Requieren atención inmediata
         </div>
       </div>
 
       {/* Distribution Chart Card */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-shadow min-h-[160px]">
-        <h4 className="text-sm font-medium text-slate-500 mb-2">Distribución por Ramo</h4>
+      <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col hover:shadow-md transition-shadow min-h-[160px]">
+        <h4 className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Distribución por Ramo</h4>
         <div className="flex-1 w-full h-32">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -61,13 +61,13 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({ stats }) => {
                   <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
                 ))}
               </Pie>
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 itemStyle={{ fontSize: '12px', fontWeight: 600, color: '#1e293b' }}
               />
-              <Legend 
-                layout="vertical" 
-                verticalAlign="middle" 
+              <Legend
+                layout="vertical"
+                verticalAlign="middle"
                 align="right"
                 iconSize={8}
                 wrapperStyle={{ fontSize: '11px' }}
