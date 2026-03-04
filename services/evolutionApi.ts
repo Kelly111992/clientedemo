@@ -97,25 +97,33 @@ export interface SendMediaParams {
 
 /**
  * Envía un archivo multimedia (PDF, Imagen) por WhatsApp
+ * Formato verificado contra Evolution API v2.3.7
  */
 export async function sendWhatsAppMedia(params: SendMediaParams): Promise<SendMessageResponse> {
     const normalizedPhone = normalizePhone(params.phone);
 
     try {
-        // Limpiar el base64 si tiene el prefijo de Data URL
-        const base64Content = params.media.includes('base64,')
-            ? params.media.split('base64,')[1]
-            : params.media;
+        // Extraer SOLO los datos base64 puros (sin el prefijo data:xxx;base64,)
+        let base64Pure = params.media;
+        if (base64Pure.includes(',')) {
+            base64Pure = base64Pure.split(',')[1];
+        }
+
+        // Determinar mimetype correcto
+        const mimetype = params.mimeType || 'application/pdf';
+        const isImage = mimetype.startsWith('image');
 
         const payload = {
             number: normalizedPhone,
-            media: base64Content,
-            mediatype: params.mimeType?.startsWith('image') ? 'image' : 'document',
-            mimetype: params.mimeType || 'application/pdf',
-            caption: params.caption || '',
+            media: base64Pure,
+            mediatype: isImage ? 'image' : 'document',
+            mimetype: mimetype,
             fileName: params.fileName,
-            delay: 1200 // Añadir un pequeño retraso ayuda a la estabilidad
+            caption: params.caption || ''
         };
+
+        console.log('Enviando media a:', `${EVOLUTION_API_URL}/message/sendMedia/${EVOLUTION_INSTANCE_NAME}`);
+        console.log('Payload (sin media):', { ...payload, media: `[base64 ${base64Pure.length} chars]` });
 
         const response = await fetch(
             `${EVOLUTION_API_URL}/message/sendMedia/${EVOLUTION_INSTANCE_NAME}`,
@@ -129,13 +137,15 @@ export async function sendWhatsAppMedia(params: SendMediaParams): Promise<SendMe
             }
         );
 
-        const data = await response.json().catch(() => ({}));
+        const responseText = await response.text();
+        let data: any = {};
+        try { data = JSON.parse(responseText); } catch { data = { raw: responseText }; }
 
         if (!response.ok) {
-            console.error('Evolution API error:', data);
+            console.error('Evolution API error:', response.status, data);
             return {
                 success: false,
-                error: data.message || data.error || `Error ${response.status}: ${response.statusText}`,
+                error: data.message || data.error || JSON.stringify(data) || `Error ${response.status}: ${response.statusText}`,
             };
         }
 
@@ -144,6 +154,7 @@ export async function sendWhatsAppMedia(params: SendMediaParams): Promise<SendMe
             messageId: data.key?.id || data.messageId,
         };
     } catch (error) {
+        console.error('sendWhatsAppMedia catch error:', error);
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Error desconocido',
