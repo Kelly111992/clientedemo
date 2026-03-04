@@ -3,6 +3,17 @@ const EVOLUTION_API_URL = 'https://evolutionapi-evolution-api.ckoomq.easypanel.h
 const EVOLUTION_API_KEY = '429683C4C977415CAAFCCE10F7D57E11';
 const EVOLUTION_INSTANCE_NAME = 'claveai';
 
+/**
+ * Obtiene la lista de números a los que se puede enviar información
+ * Configurados en .env (VITE_ADMIN_PASSWORD=password123
+VITE_WHATSAPP_NUMBERS=3318213624,3315185123
+ */
+export const getAdminWhatsAppNumbers = (): string[] => {
+    const rawNumbers = import.meta.env.VITE_WHATSAPP_NUMBERS || '';
+    if (!rawNumbers) return [];
+    return rawNumbers.split(',').map((n: string) => n.trim());
+};
+
 export interface SendMessageParams {
     phone: string;
     message: string;
