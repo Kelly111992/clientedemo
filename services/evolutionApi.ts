@@ -34,18 +34,14 @@ function normalizePhone(phone: string): string {
     // Remover todo excepto números
     let cleaned = phone.replace(/\D/g, '');
 
-    // Para México (52):
-    // Si tiene 10 dígitos, añadir 52
-    if (cleaned.length === 10) {
-        return '52' + cleaned;
+    // Si empieza con 52, nos aseguramos de tomar solo los últimos 10 dígitos 
+    // para evitar el '1' que a veces se cuela en números de México (521...)
+    if (cleaned.startsWith('52')) {
+        cleaned = cleaned.slice(-10);
     }
 
-    // Si ya tiene el 52 pero tiene el '1' extra (521...), quitarlo para probar
-    if (cleaned.startsWith('521') && cleaned.length === 13) {
-        return '52' + cleaned.substring(3);
-    }
-
-    return cleaned;
+    // Siempre retornar 52 + 10 dígitos
+    return '52' + cleaned;
 }
 
 /**
@@ -113,11 +109,12 @@ export async function sendWhatsAppMedia(params: SendMediaParams): Promise<SendMe
 
         const payload = {
             number: normalizedPhone,
-            base64: base64Content, // Algunos servidores usan base64 en lugar de media
+            media: base64Content,
             mediatype: params.mimeType?.startsWith('image') ? 'image' : 'document',
-            mimetype: params.mimeType || 'application/octet-stream',
-            fileName: params.fileName,
+            mimetype: params.mimeType || 'application/pdf',
             caption: params.caption || '',
+            fileName: params.fileName,
+            delay: 1200 // Añadir un pequeño retraso ayuda a la estabilidad
         };
 
         const response = await fetch(
