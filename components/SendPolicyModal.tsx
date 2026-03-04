@@ -50,10 +50,9 @@ export const SendPolicyModal: React.FC<SendPolicyModalProps> = ({ isOpen, onClos
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
-                // Remove data URL prefix (e.g., "data:application/pdf;base64,")
-                const base64 = reader.result as string;
-                const base64Data = base64.split(',')[1];
-                resolve(base64Data);
+                // Mantener el prefijo del Data URL (ej: "data:application/pdf;base64,")
+                // Evolution API lo requiere para identificar el tipo de archivo vía base64
+                resolve(reader.result as string);
             };
             reader.onerror = error => reject(error);
         });

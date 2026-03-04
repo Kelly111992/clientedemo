@@ -101,6 +101,15 @@ export async function sendWhatsAppMedia(params: SendMediaParams): Promise<SendMe
     const normalizedPhone = normalizePhone(params.phone);
 
     try {
+        const payload = {
+            number: normalizedPhone,
+            media: params.media, // Ahora incluye el prefijo data:...
+            mediatype: params.mimeType?.startsWith('image') ? 'image' : 'document',
+            mimetype: params.mimeType, // Campo adicional requerido por algunas versiones
+            fileName: params.fileName,
+            caption: params.caption || '',
+        };
+
         const response = await fetch(
             `${EVOLUTION_API_URL}/message/sendMedia/${EVOLUTION_INSTANCE_NAME}`,
             {
@@ -109,25 +118,20 @@ export async function sendWhatsAppMedia(params: SendMediaParams): Promise<SendMe
                     'Content-Type': 'application/json',
                     'apikey': EVOLUTION_API_KEY,
                 },
-                body: JSON.stringify({
-                    number: normalizedPhone,
-                    media: params.media,
-                    mediatype: params.mimeType?.startsWith('image') ? 'image' : 'document',
-                    fileName: params.fileName,
-                    caption: params.caption || '',
-                }),
+                body: JSON.stringify(payload),
             }
         );
 
+        const data = await response.json().catch(() => ({}));
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
+            console.error('Evolution API error:', data);
             return {
                 success: false,
-                error: errorData.message || `Error ${response.status}: ${response.statusText}`,
+                error: data.message || data.error || `Error ${response.status}: ${response.statusText}`,
             };
         }
 
-        const data = await response.json();
         return {
             success: true,
             messageId: data.key?.id || data.messageId,
