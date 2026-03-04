@@ -34,10 +34,15 @@ function normalizePhone(phone: string): string {
     // Remover todo excepto números
     let cleaned = phone.replace(/\D/g, '');
 
-    // Si empieza con 52 (México), está bien
-    // Si no, agregar 52
-    if (!cleaned.startsWith('52')) {
-        cleaned = '52' + cleaned;
+    // Para México (52):
+    // Si tiene 10 dígitos, añadir 52
+    if (cleaned.length === 10) {
+        return '52' + cleaned;
+    }
+
+    // Si ya tiene el 52 pero tiene el '1' extra (521...), quitarlo para probar
+    if (cleaned.startsWith('521') && cleaned.length === 13) {
+        return '52' + cleaned.substring(3);
     }
 
     return cleaned;
@@ -108,7 +113,7 @@ export async function sendWhatsAppMedia(params: SendMediaParams): Promise<SendMe
 
         const payload = {
             number: normalizedPhone,
-            media: base64Content,
+            base64: base64Content, // Algunos servidores usan base64 en lugar de media
             mediatype: params.mimeType?.startsWith('image') ? 'image' : 'document',
             mimetype: params.mimeType || 'application/octet-stream',
             fileName: params.fileName,
