@@ -101,11 +101,16 @@ export async function sendWhatsAppMedia(params: SendMediaParams): Promise<SendMe
     const normalizedPhone = normalizePhone(params.phone);
 
     try {
+        // Limpiar el base64 si tiene el prefijo de Data URL
+        const base64Content = params.media.includes('base64,')
+            ? params.media.split('base64,')[1]
+            : params.media;
+
         const payload = {
             number: normalizedPhone,
-            media: params.media, // Ahora incluye el prefijo data:...
+            media: base64Content,
             mediatype: params.mimeType?.startsWith('image') ? 'image' : 'document',
-            mimetype: params.mimeType, // Campo adicional requerido por algunas versiones
+            mimetype: params.mimeType || 'application/octet-stream',
             fileName: params.fileName,
             caption: params.caption || '',
         };
