@@ -62,7 +62,25 @@ export function BirthdayCard({ policies }: BirthdayCardProps) {
     };
 
     if (birthdaysToday.length === 0 && upcomingBirthdays.length === 0) {
-        return null; // No mostrar si no hay cumpleaños
+        return (
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-8 mb-6 flex flex-col items-center justify-center text-center h-full min-h-[340px] shadow-sm transition-all hover:shadow-lg group">
+                <div className="relative">
+                    <div className="absolute -inset-4 bg-gradient-to-r from-indigo-500/30 to-purple-600/30 rounded-full blur-xl opacity-50 group-hover:opacity-70 transition duration-1000 group-hover:duration-200"></div>
+                    <div className="relative bg-slate-900/50 dark:bg-slate-950/50 p-4 rounded-3xl ring-1 ring-white/10 backdrop-blur-sm overflow-hidden">
+                        <img src="/logo.png" alt="Seguros Premium Logo" className="w-64 h-auto object-contain drop-shadow-2xl rounded-xl" />
+                    </div>
+                </div>
+
+                <div className="mt-6 space-y-2">
+                    <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">
+                        Seguros Premium
+                    </h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">
+                        Tu tranquilidad, nuestro compromiso.
+                    </p>
+                </div>
+            </div>
+        );
     }
 
     return (

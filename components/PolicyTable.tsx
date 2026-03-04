@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Policy, RamoType } from '../types';
-import { Search, Filter, Phone, AlertTriangle, Pencil, Trash2, Calendar, CheckCircle2, AlertOctagon, Send } from 'lucide-react';
+import { Search, Filter, Phone, AlertTriangle, Pencil, Trash2, Calendar, CheckCircle2, AlertOctagon, Send, Download } from 'lucide-react';
 import { isExpiringSoon, formatDate, getExpirationCategory, ExpirationCategory, getDaysDifference } from '../utils/dateUtils';
 import { RAMO_COLORS } from '../constants';
 import { SendPolicyModal } from './SendPolicyModal';
@@ -77,6 +77,13 @@ export const PolicyTable: React.FC<PolicyTableProps> = ({ policies, onEdit, onDe
                 <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-xs rounded-full">
                   {policies.length}
                 </span>
+                <button
+                  onClick={() => import('../utils/pdfGenerator').then(mod => mod.generatePortfolioPDF(policies))}
+                  className="ml-2 p-1.5 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  title="Descargar Reporte PDF"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
               </h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm">Gestiona tus pólizas y renovaciones</p>
             </div>

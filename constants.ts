@@ -9,7 +9,7 @@ export const INITIAL_POLICIES: Policy[] = [
     ramo: "Vida",
     producto: "PPR",
     vigencia: "2026-01-15",
-    fechaNacimiento: "1985-02-08" // ¡Hoy es su cumpleaños! (para demo)
+    fechaNacimiento: "1985-05-08"
   },
   {
     id: '2',
@@ -19,7 +19,7 @@ export const INITIAL_POLICIES: Policy[] = [
     ramo: "Gastos Médicos",
     producto: "GMM",
     vigencia: "2026-01-10",
-    fechaNacimiento: "1990-03-15"
+    fechaNacimiento: "1990-06-15"
   },
   {
     id: '3',
@@ -49,7 +49,7 @@ export const INITIAL_POLICIES: Policy[] = [
     ramo: "Gastos Médicos",
     producto: "GMM",
     vigencia: "2026-02-25",
-    fechaNacimiento: "1992-02-09" // Mañana es su cumpleaños
+    fechaNacimiento: "1992-08-09"
   },
   {
     id: '6',
