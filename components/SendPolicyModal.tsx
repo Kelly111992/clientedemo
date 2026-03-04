@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Policy } from '../types';
 import { X, Upload, FileText, Send, Loader2, CheckCircle2, MessageSquare } from 'lucide-react';
 import { PROMOTION_TEMPLATES, getPromotionMessage } from '../data/promotions';
-import { sendWhatsAppMedia } from '../services/evolutionApi';
+import { sendWhatsAppMedia, sendWhatsAppMessage } from '../services/evolutionApi';
 
 interface SendPolicyModalProps {
     isOpen: boolean;
@@ -59,33 +59,49 @@ export const SendPolicyModal: React.FC<SendPolicyModalProps> = ({ isOpen, onClos
     };
 
     const handleSend = async () => {
-        if (!policy || !file) return;
+        if (!policy || !customMessage) return;
 
-        setStatus('converting');
         try {
-            const base64Data = await convertFileToBase64(file);
+            // Si hay archivo adjunto, enviar como media
+            if (file) {
+                setStatus('converting');
+                const base64Data = await convertFileToBase64(file);
 
-            setStatus('sending');
-            const result = await sendWhatsAppMedia({
-                phone: policy.telefono,
-                media: base64Data,
-                fileName: file.name,
-                mimeType: file.type,
-                caption: customMessage
-            });
+                setStatus('sending');
+                const result = await sendWhatsAppMedia({
+                    phone: policy.telefono,
+                    media: base64Data,
+                    fileName: file.name,
+                    mimeType: file.type,
+                    caption: customMessage
+                });
 
-            if (result.success) {
-                setStatus('success');
-                setTimeout(() => {
-                    onClose();
-                }, 2000);
+                if (result.success) {
+                    setStatus('success');
+                    setTimeout(() => { onClose(); }, 2000);
+                } else {
+                    setStatus('error');
+                    setErrorMessage(result.error || 'Error al enviar archivo');
+                }
             } else {
-                setStatus('error');
-                setErrorMessage(result.error || 'Error al enviar mensaje');
+                // Sin archivo: enviar solo mensaje de texto
+                setStatus('sending');
+                const result = await sendWhatsAppMessage({
+                    phone: policy.telefono,
+                    message: customMessage
+                });
+
+                if (result.success) {
+                    setStatus('success');
+                    setTimeout(() => { onClose(); }, 2000);
+                } else {
+                    setStatus('error');
+                    setErrorMessage(result.error || 'Error al enviar mensaje');
+                }
             }
         } catch (error) {
             setStatus('error');
-            setErrorMessage('Error al procesar el archivo');
+            setErrorMessage('Error al procesar el envío');
             console.error(error);
         }
     };
@@ -226,7 +242,7 @@ export const SendPolicyModal: React.FC<SendPolicyModalProps> = ({ isOpen, onClos
                     </button>
                     <button
                         onClick={handleSend}
-                        disabled={!file || !customMessage || status === 'sending' || status === 'converting' || status === 'success'}
+                        disabled={!customMessage || status === 'sending' || status === 'converting' || status === 'success'}
                         className={`
               px-6 py-2 rounded-xl text-white font-medium text-sm shadow-lg shadow-indigo-200 dark:shadow-none flex items-center gap-2 transition-all
               ${status === 'success'
