@@ -1,7 +1,7 @@
 // Evolution API Service for WhatsApp messaging
-const EVOLUTION_API_URL = 'https://evolutionapi-evolution-api.ckoomq.easypanel.host';
-const EVOLUTION_API_KEY = '429683C4C977415CAAFCCE10F7D57E11';
-const EVOLUTION_INSTANCE_NAME = 'claveai';
+const EVOLUTION_API_URL = import.meta.env.VITE_EVOLUTION_API_URL || 'https://evolutionapi-evolution-api.ckoomq.easypanel.host';
+const EVOLUTION_API_KEY = import.meta.env.VITE_EVOLUTION_API_KEY || '429683C4C977415CAAFCCE10F7D57E11';
+const EVOLUTION_INSTANCE_NAME = import.meta.env.VITE_EVOLUTION_INSTANCE || 'claveai';
 
 /**
  * Obtiene la lista de números a los que se puede enviar información
